@@ -136,6 +136,22 @@ RUN printf '\n=====================================================\n=> Install 
     find /home/bosh /data -print0 | xargs -0 chown bosh:users && \
     rm -fr /tmp/* /var/tmp/* && find /var/log -type f -delete
 
+#--- Install Java
+    sudo add-apt-repository ppa:webupd8team/java
+    sudo apt-get update -y
+    sudo apt-get install oracle-java8-installer
+
+#--- Install Maven
+    cd /opt/
+    wget http://www-eu.apache.org/dist/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz
+    tar -xvzf apache-maven-3.3.9-bin.tar.gz
+    mv apache-maven-3.3.9 maven
+    touch /etc/profile.d/mavenenv.sh
+    echo "export M2_HOME=/opt/maven" >> /etc/profile.d/mavenenv.sh
+    echo "export PATH=${M2_HOME}/bin:${PATH}" >> /etc/profile.d/mavenenv.sh
+    chmod +x /etc/profile.d/mavenenv.sh
+    source /etc/profile.d/mavenenv.sh
+
 #--- Launch supervisord daemon
 CMD /usr/local/bin/supervisord.sh
 EXPOSE 22
